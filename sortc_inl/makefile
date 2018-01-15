@@ -1,5 +1,5 @@
 all:
-	gcc  main.c  -O3 -std=c11 -fopenmp -o sortc
+	gcc  main.c  -O3 -std=c11  -o sortc
 
 asm:
 	gcc -S -c  main.c  -O3 -std=c11 
