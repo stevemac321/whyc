@@ -1,4 +1,3 @@
-#include <omp.h>
 #include <time.h>
 #include <vector>
 #include <algorithm>
@@ -14,7 +13,6 @@ int main()
 	for (int i = 0; i < NUM_ELEMS; i++)
 		v[i] = rand() % NUM_ELEMS - 1;
 
-#pragma omp parallel
 	clock_t start = clock();
 	std::sort(std::begin(v), std::end(v));
 
