@@ -9,7 +9,7 @@
 #include "list.inl"
 
 const int NUM_ELEMS = 1000000;
-struct nodeinl* ctor_int(const void *data)
+struct nodeinl* ctor_int(void *data)
 {
         assert(data);
         struct nodeinl *pnew = malloc(sizeof(struct nodeinl));
