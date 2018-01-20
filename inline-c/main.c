@@ -9,7 +9,7 @@
 #include <time.h>
 #include "list.inl"
 
-const int NUM_ELEMS = 100;
+const int NUM_ELEMS = 1000000;
 struct nodeinl* ctor_int(void *data)
 {
         assert(data);
