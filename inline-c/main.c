@@ -24,6 +24,7 @@ struct nodeinl* ctor_int(void *data)
 void dtor_int(struct nodeinl *p)
 {
         assert(p);
+		free(p->data);
         free(p);
 }
 int main()
