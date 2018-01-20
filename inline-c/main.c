@@ -5,15 +5,19 @@
 ==============================================================================*/
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 #include "list.inl"
 
-const int NUM_ELEMS = 1000000;
+const int NUM_ELEMS = 100;
 struct nodeinl* ctor_int(void *data)
 {
         assert(data);
         struct nodeinl *pnew = malloc(sizeof(struct nodeinl));
-        pnew->data = data;
+        assert(pnew);
+        pnew->data = malloc(sizeof(int));
+        assert(pnew->data);
+        *(int*)pnew->data = *(int*)data; 
         return pnew;
 
 }
@@ -21,7 +25,6 @@ void dtor_int(struct nodeinl *p)
 {
         assert(p);
         free(p);
-        
 }
 int main()
 {
@@ -31,7 +34,7 @@ int main()
 
 	srand(time(NULL));
 	for (int i = 0; i < NUM_ELEMS; i++)
-		a[i] = rand() % NUM_ELEMS - 100;
+		a[i] = rand() % NUM_ELEMS;
 
         listinl_init(&l, ctor_int, dtor_int);
 
