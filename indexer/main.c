@@ -111,7 +111,8 @@ int main()
 	}
         
         clock_t stop = clock();
-        printf("%.4lf\n", (stop - start) / ((double) CLOCKS_PER_SEC));
+        printf("Ticks: %ld\n", stop - start);
+        printf("Seconds: %.4lf\n", (stop - start) / ((double) CLOCKS_PER_SEC));
 
 #ifdef _DUMP
         for(size_t i=0; i < BOOKS; i++) {

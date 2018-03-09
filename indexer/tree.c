@@ -52,62 +52,66 @@ void tree_print(struct tree * t)
 {
         print(t->root);
 }
-int cmp(const char *vl, const char *vr)
+int cmp(const char *left, const char *right)
 {
-	char *pl = (char*)vl;
-	char *pr = (char *)vr;
+        char * dupl = strdup(left);
+        char * dupr = strdup(right);
 
-	while (*pl != ':' && *pl != '\0')
-		pl++;
+        struct queue qleft;
+        struct queue qright;
+        const char *delims = ":-,";
+        int ret = 0;
 
-	while (*pr != ':' && *pr != '\0')
-		pr++;
+        queue_init(&qleft);
+        queue_init(&qright);
 
-	if (*pl == ':') 
-		*pl = '\0';
+        char *tok = strtok(dupl, delims);
+        while(tok) {
+                queue_enqueue(&qleft, tok);
+                tok = strtok(NULL, delims);
+        }
 
-	if (*pr == ':') 
-		*pr = '\0';
-        
-	int il = atoi(vl);
-	int ir = atoi(vr);
+        tok = strtok(dupr, delims);
+        while(tok) {
+                queue_enqueue(&qright, tok);
+                tok = strtok(NULL, delims);
+        }
 
-        *pl = ':';
-        *pr = ':';
+        const char *pl = NULL;
+        const char * pr = NULL;
+        int il = 0;
+        int ir = 0;
 
-	if (il != ir)
-		return il - ir;
-	else {
-		pl++;
-		pr++;
+        while(!queue_is_empty(&qleft) && !queue_is_empty(&qright)) {
+                pl = queue_dequeue(&qleft, pl);
+                pr = queue_dequeue(&qright, pr);
+                il = atoi(pl);
+                ir = atoi(pr);
 
-		char *ls = pl;
-		char *rs = pr;
+                if(il != ir) 
+                        break;
+                
+        }
+       
+        if(il != ir)
+                ret = il - ir;
+        else
+                ret = queue_count(&qleft) - queue_count(&qright); 
 
-		while (isdigit(*pl))
-			++pl;
-
-		while (isdigit(*pr))
-			++pr;
-
-                char tl = *pl;
-                char tr = *pr;
-		*pl = '\0';
-		*pr = '\0';
-
-		il = atoi(ls);
-		ir = atoi(rs);
-                *pl = tl;
-                *pr = tr;
-		return il - ir;
-	}
+        queue_free(&qleft);
+        queue_free(&qright);
+        return ret;
 }
-
 /*-----------queue----------------*/
 
+size_t queue_count(struct queue *q)
+{
+        return q->count;
+}
 void queue_init(struct queue *q)
 {
         q->head = q->tail = NULL;
+        q->count = 0;
 }
 void queue_enqueue(struct queue *q, const char *line)
 {
@@ -121,6 +125,7 @@ void queue_enqueue(struct queue *q, const char *line)
                 q->tail->next = pnew;
                 q->tail = pnew;
         }
+        q->count++;
 }
 const char *queue_dequeue(struct queue *q, const char *out)
 {
@@ -131,6 +136,8 @@ const char *queue_dequeue(struct queue *q, const char *out)
 
         if(q->head == NULL)
                 q->tail = NULL;
+
+        q->count--;
 
         return out;
 }

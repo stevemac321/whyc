@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
+#include <deque>
 #include <fstream>
 #include <sstream>
 #include <regex>
@@ -16,58 +17,56 @@ struct book {
 	std::vector<std::pair<std::string, std::string>> verses;
         unsigned int count = 0;
 };
+int cmp(const char *left, const char *right)
+{
+        char * dupl = strdup(left);
+        char * dupr = strdup(right);
+
+        std::deque<const char *> qleft;
+        std::deque<const char *> qright;
+        const char *delims = ":-,";
+
+        char *tok = strtok(dupl, delims);
+        while(tok) {
+                qleft.push_front(tok);
+                tok = strtok(NULL, delims);
+        }
+
+        tok = strtok(dupr, delims);
+        while(tok) {
+                qright.push_front(tok);
+                tok = strtok(NULL, delims);
+        }
+
+        const char *pl = NULL;
+        const char * pr = NULL;
+        
+        while(!qleft.empty() && !qright.empty()) {
+                pl = qleft.front();
+                qleft.pop_front();
+                pr = qright.front();
+                qright.pop_front();
+                int il = atoi(pl);
+                int ir = atoi(pr);
+
+                if(il != ir) 
+                        return il - ir;
+        }
+        /* else il still == ir, the queue that is not empty is greater*/
+        
+        return qleft.size() - qright.size();
+}
 struct verseless {
 	bool operator()(const std::pair<std::string, std::string> &l,
 			const std::pair<std::string, std::string> &r) const
 	{
+                
 		std::string left = l.first;
 		std::string right = r.first;
-
-		char *pl = const_cast<char *>(left.c_str());
-		char *pr = const_cast<char *>(right.c_str());
-		char *ls = pl;
-		char *rs = pr;
-
-		while (*pl != ':' && *pl != '\n')
-			pl++;
-
-		while (*pr != ':' && *pr != '\n')
-			pr++;
-
-		if (*pl == ':')
-			*pl = '\0';
-
-		if (*pr == ':')
-			*pr = '\0';
-
-		int il = atoi(ls);
-		int ir = atoi(rs);
-
-		if (il != ir)
-			return il < ir;
-		else {
-			pl++;
-			pr++;
-
-			ls = pl;
-			rs = pr;
-
-			while (isdigit(*pl))
-				++pl;
-
-			while (isdigit(*pr))
-				++pr;
-
-			*pl = '\0';
-			*pr = '\0';
-
-			il = atoi(ls);
-			ir = atoi(rs);
-
-			return il < ir;
-		}
-	}
+		return cmp(const_cast<char *>(left.c_str()), const_cast<char *>(right.c_str())) < 0;
+        }
 };
+
 void parsesemicolon(std::vector<book> &v, std::string &chapter,
 		    std::string &paragraph, std::string &footnote,
 		    std::string &token)
@@ -345,7 +344,8 @@ int main()
 	}
 
         clock_t stop = clock();
-        printf("%.4lf\n", (stop - start) / ((double) CLOCKS_PER_SEC));
+        printf("Ticks: %ld\n", stop - start);
+        printf("Seconds: %.4lf\n", (stop - start) / ((double) CLOCKS_PER_SEC));
 #endif
 }
 
