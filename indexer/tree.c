@@ -56,52 +56,35 @@ int cmp(const char *left, const char *right)
 {
         char * dupl = strdup(left);
         char * dupr = strdup(right);
+        
+        int qleft[10]={0};
+        int qright[10]={0};
 
-        struct queue qleft;
-        struct queue qright;
         const char *delims = ":-,";
-        int ret = 0;
 
-        queue_init(&qleft);
-        queue_init(&qright);
-
+        size_t ldex=0;
         char *tok = strtok(dupl, delims);
         while(tok) {
-                queue_enqueue(&qleft, tok);
+                qleft[ldex++] = atoi(tok);
                 tok = strtok(NULL, delims);
         }
 
+        size_t rdex=0;
         tok = strtok(dupr, delims);
         while(tok) {
-                queue_enqueue(&qright, tok);
+                qright[rdex++] = atoi(tok);
                 tok = strtok(NULL, delims);
         }
 
-        const char *pl = NULL;
-        const char * pr = NULL;
-        int il = 0;
-        int ir = 0;
-
-        while(!queue_is_empty(&qleft) && !queue_is_empty(&qright)) {
-                pl = queue_dequeue(&qleft, pl);
-                pr = queue_dequeue(&qright, pr);
-                il = atoi(pl);
-                ir = atoi(pr);
-
-                if(il != ir) 
-                        break;
-                
-        }
-       
-        if(il != ir)
-                ret = il - ir;
-        else
-                ret = queue_count(&qleft) - queue_count(&qright); 
-
-        queue_free(&qleft);
-        queue_free(&qright);
-        return ret;
+        /* ldex and rdex now serve as count*/
+        for(size_t i=0; i < ldex && i < rdex; i++)
+                if(qleft[i] != qright[i])
+                        return qleft[i] - qright[i];
+        
+        /*if one queue is longer than the other, it is greater*/
+        return ldex - rdex;
 }
+
 /*-----------queue----------------*/
 
 size_t queue_count(struct queue *q)
