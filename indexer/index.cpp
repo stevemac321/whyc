@@ -1,5 +1,4 @@
 #include <cassert>
-#include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
@@ -335,8 +334,7 @@ int main()
 			std::sort(std::begin(v[i].verses),
 				  std::end(v[i].verses), verseless());
 
-                        std::cout << v[i].name << "\n";
-//			fprintf(stdout, "%s\n", v[i].name.c_str());
+			fprintf(stdout, "%s\n", v[i].name.c_str());
 			for (auto i : v[i].verses)
 				fprintf(stdout, "%-*s %*s\n", 8,
 					i.first.c_str(), 8, i.second.c_str());
