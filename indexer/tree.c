@@ -76,6 +76,9 @@ int cmp(const char *left, const char *right)
                 tok = strtok(NULL, delims);
         }
 
+        free(dupl);
+        free(dupr);
+
         /* ldex and rdex now serve as count*/
         for(size_t i=0; i < ldex && i < rdex; i++)
                 if(qleft[i] != qright[i])
