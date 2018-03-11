@@ -169,21 +169,18 @@ void parse_line(struct book bks[BOOKS], const int chapter, const int paragraph,
 
 	if (begin == NULL || end == NULL)
 		return;
-
-	struct queue q;
-	queue_init(&q);
-
+        
+        char * queue[16];
+        size_t dex = 0;
 	char *tok = strtok(begin, "#");
+
 	while (tok) {
-		queue_enqueue(&q, tok);
+                queue[dex++] = tok;
 		tok = strtok(NULL, "#");
 	}
-	const char *out = NULL;
-	while (!queue_is_empty(&q)) {
-		out = queue_dequeue(&q, out);
-		parse_hash(bks, chapter, paragraph, out);
-	}
-	queue_free(&q);
+
+        for(size_t i=0; i < dex; i++)
+                parse_hash(bks, chapter, paragraph, queue[i]);
 }
 void parse_hash(struct book bks[BOOKS], const int chapter, const int paragraph,
 		const char *token)
@@ -201,20 +198,18 @@ void parse_hash(struct book bks[BOOKS], const int chapter, const int paragraph,
 
 	char *dup = strdup(token);
 
-	struct queue q;
-	queue_init(&q);
-
+        char *queue[20];
+        size_t dex=0;
 	char *tok = strtok(dup, ";");
 	while (tok) {
-		queue_enqueue(&q, tok);
+                queue[dex++] = tok;
+                assert(dex < 20);
 		tok = strtok(NULL, ";");
 	}
-	const char *out = NULL;
-	while (!queue_is_empty(&q)) {
-		out = queue_dequeue(&q, out);
-		parse_semi(bks, chapter, paragraph, ftnote, out);
-	}
-	queue_free(&q);
+	
+        for(size_t i=0; i < dex; i++)
+                parse_semi(bks, chapter, paragraph, ftnote, queue[i]);
+
 	free(dup);
 }
 void parse_semi(struct book bks[BOOKS], const int chapter, const int paragraph,

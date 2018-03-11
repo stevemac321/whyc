@@ -27,20 +27,4 @@ void tree_delete(struct tree *);
 void tree_print(struct tree *);
 int cmp(const char*, const char*);
 
-struct qnode {
-        const char *line;
-        struct qnode *next;
-};
-struct queue {
-        struct qnode *head;
-        struct qnode *tail;
-        size_t count;
-};
-
-void queue_init(struct queue *);
-void queue_enqueue(struct queue *, const char *);
-const char *queue_dequeue(struct queue *, const char *);
-bool queue_is_empty(struct queue *);
-size_t queue_count(struct queue *);
-void queue_free(struct queue *);
 
